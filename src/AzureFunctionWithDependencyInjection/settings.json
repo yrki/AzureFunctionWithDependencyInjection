@@ -1,0 +1,14 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet"
+  },
+  "MyConfiguration": {
+    "ConfigurationItem1": "Value1 from settings.json",
+    "ConfigurationItem2": "Value2 from settings.json",
+    "SubConfiguration": {
+      "SubConfigurationItem": "SubValue from settings.json"
+    }
+  }
+}
