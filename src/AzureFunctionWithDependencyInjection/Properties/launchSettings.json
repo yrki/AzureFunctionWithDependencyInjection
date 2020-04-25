@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "AzureFunctionWithDependencyInjectionAndConfigInKeyvault": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "Environment": "Test",
+        "MyConfiguration__ConfigurationItem3" : "My configuration from environment variable"
+
+      }
+    }
+  }
+}

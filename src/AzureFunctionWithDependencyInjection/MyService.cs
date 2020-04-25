@@ -2,7 +2,7 @@ using Microsoft.Extensions.Options;
 
 namespace AzureFunctionWithDependencyInjectionAndConfigInKeyvault
 {
-	public class MyService
+	public class MyService : IMyService
 	{
 		private readonly MyConfiguration _config;
 

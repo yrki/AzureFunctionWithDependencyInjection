@@ -1,16 +1,19 @@
 using System;
-using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
+// Needs the: Microsoft.Azure.Functions.Extensions - nuget package
+[assembly: FunctionsStartup(typeof(AzureFunctionWithDependencyInjectionAndConfigInKeyvault.Startup))]
+
 namespace AzureFunctionWithDependencyInjectionAndConfigInKeyvault
 {
-	public class BootStrap
+	// : FunctionsStartup - needs the: Microsoft.Azure.Functions.Extensions - nuget package
+	public class Startup : FunctionsStartup
 	{
-		public static IServiceProvider Startup(ExecutionContext context)
+		public override void Configure(IFunctionsHostBuilder builder)
 		{
 			var environment = Environment.GetEnvironmentVariable("Environment");
-
 
 			// The order of the .AddKeyVault/.AddJsonFile/.AddEnvironmentVariables matters. Next overrides previous etc.
 
@@ -20,13 +23,13 @@ namespace AzureFunctionWithDependencyInjectionAndConfigInKeyvault
 
 				// Setting the key vault (See the Configuration builder extensions)
 				// Key format in AzureKeyVault: "MyConfiguration__ConfigurationItem1"
-				.AddKeyVault(environment)
+				//.AddKeyVault(environment)
 
 				// Setting the default settings from json file
-				.AddJsonFile($"{context.FunctionAppDirectory}/settings.json", optional: true)
+				.AddJsonFile($"settings.json", optional: false)
 
 				// Setting the environment specific setting from json file.
-				.AddJsonFile($"{context.FunctionAppDirectory}/{environment}.settings.json")
+				.AddJsonFile($"{environment}.settings.json", optional: true)
 
 				// Setting settings from environment-variables
 				// Key format in environment variables: "MyConfiguration--ConfigurationItem1"
@@ -34,13 +37,10 @@ namespace AzureFunctionWithDependencyInjectionAndConfigInKeyvault
 				.Build();
 
 			// Adding service registry
-			var services = new ServiceCollection()
-				.AddSingleton<MyService>();
+			builder.Services.AddSingleton<IMyService, MyService>();
 
 			// Setting MyConfiguration
-			services.Configure<MyConfiguration>(config.GetSection("MyConfiguration"));
-		    
-			return services.BuildServiceProvider();
+			builder.Services.Configure<MyConfiguration>(config.GetSection("MyConfiguration"));
 		}
 	}
 }
